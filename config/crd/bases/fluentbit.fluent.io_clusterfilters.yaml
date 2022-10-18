@@ -473,6 +473,11 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        allowlistKeys:
+                          description: If the key is not matched, that field is removed.
+                          items:
+                            type: string
+                          type: array
                         records:
                           description: Append fields. This parameter needs key and
                             value pair.

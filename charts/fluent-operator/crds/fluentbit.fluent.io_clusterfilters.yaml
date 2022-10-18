@@ -489,6 +489,11 @@ spec:
                           items:
                             type: string
                           type: array
+                        allowlistKeys:
+                          description: If the key is not matched, that field is removed.
+                          items:
+                            type: string
+                          type: array
                       type: object
                     rewriteTag:
                       description: RewriteTag defines a RewriteTag configuration.

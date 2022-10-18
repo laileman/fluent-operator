@@ -17,6 +17,8 @@ type RecordModifier struct {
 	RemoveKeys []string `json:"removeKeys,omitempty"`
 	// If the key is not matched, that field is removed.
 	WhitelistKeys []string `json:"whitelistKeys,omitempty"`
+	// If the key is not matched, that field is removed.
+	AllowlistKeys []string `json:"allowlistKeys,omitempty"`
 }
 
 func (_ *RecordModifier) Name() string {
@@ -37,6 +39,9 @@ func (rm *RecordModifier) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	for _, key := range rm.WhitelistKeys {
 		kvs.Insert("Whitelist_key", key)
+	}
+	for _, key := range rm.AllowlistKeys {
+		kvs.Insert("Allowlist_key", key)
 	}
 	return kvs, nil
 }

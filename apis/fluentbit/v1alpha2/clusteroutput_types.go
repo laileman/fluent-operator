@@ -80,6 +80,10 @@ type OutputSpec struct {
 	PrometheusRemoteWrite *output.PrometheusRemoteWrite `json:"prometheusRemoteWrite,omitempty"`
 	// CustomPlugin defines Custom Output configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
+	// SimpleStorageService defines S3 Output configuration.
+	SimpleStorageService *output.SimpleStorageService `json:"s3,omitempty"`
+	// Influxdb defines Influxdb Output configuration.
+	Influxdb *output.Influxdb `json:"influxdb,omitempty"`
 }
 
 // +kubebuilder:object:root=true

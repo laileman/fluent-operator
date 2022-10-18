@@ -2015,6 +2015,362 @@ spec:
                         type: string
                     type: object
                 type: object
+              s3:
+                description: Amazone S3 Output configuration.
+                properties:
+                  region:
+                    description: 'The AWS region of your S3 bucket'
+                    type: string
+                  bucket:
+                    description: 'S3 Bucket name'
+                    type: string
+                  jsonDateKey:
+                    description: Specify the name of the time key in the output record.
+                      To disable the time key just set the value to false.
+                    type: string
+                  jsonDateFormat:
+                    description: Specify the format of the date.
+                      Supported formats are double, epoch, iso8601
+                      and java_sql_timestamp
+                    type: string
+                  totalFileSize:
+                    description: 'Specifies the size of files in S3. Maximum size is 50G, minimim is 1M.'
+                    type: string
+                  uploadChunkSize:
+                    description: 'The size of each part for multipart uploads. Max: 50M'
+                    type: string
+                  uploadTimeout:
+                    description: Whenever this amount of time has elapsed,
+                      Fluent Bit will complete an upload and create a new file in S3.
+                      For example,
+                      set this value to 60m and you will get a new file every hour.
+                    type: string
+                  storeDir:
+                    description: Directory to locally buffer data before sending. When multipart uploads are used,
+                       data will only be buffered until the upload_chunk_size is reached.
+                    type: string
+                  s3KeyFormat:
+                    description: Format string for keys in S3.
+                       This option supports a UUID, strftime time formatters, a syntax
+                       for selecting parts of the Fluent log tag
+                       using a syntax inspired by the rewrite_tag filter.
+                       Add $UUID in the format string to insert a random string.
+                       Add $INDEX in the format string to insert an integer that
+                       increments each upload. Add $TAG in the format string to
+                       insert the full log tag; add $TAG[0] to insert the first part
+                       of the tag in the s3 key. The tag is split into “parts” using
+                       the characters specified with the s3_key_format_tag_delimiters
+                       option. Add extension directly after the last piece of the
+                       format string to insert a key suffix. If you want to
+                       specify a key suffix and you are in use_put_object mode,
+                       you must specify $UUID as well. More explanations can be
+                       found in use_put_object option.
+                       See the in depth examples and tutorial in the documentation.
+                    type: string
+                  s3KeyFormatTagDelimiters:
+                    description: A series of characters which will be used to split
+                       the tag into 'parts' for use with the s3_key_format option.
+                       See the in depth examples and tutorial in the documentation.
+                    type: string
+                  staticFilePath:
+                    description: Disables behavior where UUID string is
+                       automatically appended
+                       to end of S3 key name when $UUID is not provided in
+                       s3_key_format. $UUID, time formatters, $TAG, and
+                       other dynamic key formatters all work as expected
+                       while this feature is set to true.
+                    type: boolean
+                  usePutObject:
+                    description: Use the S3 PutObject API,
+                       instead of the multipart upload API.
+                       When this option is on, key extension is
+                       only available when $UUID is specified in s3_key_format.
+                       If $UUID is not included, a random string will be appended
+                       at the end of the format
+                       string and the key extension cannot be customized in this case.
+                    type: boolean
+                  roleArn:
+                    description: ARN of an IAM role to assume (ex. for cross account access).
+                    type: string
+                  stsEndpoint:
+                    description: Custom endpoint for the STS API.
+                    type: string
+                  cannedAcl:
+                    description: Predefined Canned ACL policy for S3 objects.
+                    type: string
+                  compression:
+                    description: Compression type for S3 objects.
+                       'gzip' is currently the only supported value.
+                        The Content-Encoding HTTP Header will be set to
+                        'gzip'. Compression can be enabled
+                         when use_put_object is on. If Apache Arrow
+                         support was enabled at compile time, you can
+                          set 'arrow' to this option.
+                    type: string
+                  contentType:
+                    description: A standard MIME type for the S3 object;
+                      this will be set as the Content-Type HTTP header.
+                    type: string
+                  sendContentMd5:
+                    description: Send the Content-MD5 header with PutObject and UploadPart requests,
+                       as is required when Object Lock is enabled.
+                    type: string
+                  autoRetryRequests:
+                    description: Immediately retry failed requests to AWS services once.
+                       This option does not affect the normal Fluent Bit retry mechanism with backoff.
+                       Instead, it enables an immediate retry with no delay for networking errors,
+                       which may help improve throughput when there are transient/random networking issues.
+                    type: boolean
+                  logKey:
+                    description: By default, the whole log record will be sent to S3.
+                       If you specify a key name with this option,
+                       then only the value of that key will be sent to S3.
+                       For example, if you are using Docker,
+                       you can specify log_key log and only the log message will be sent to S3.
+                    type: string
+                  preserveDataOrdering:
+                    description: Normally, when an upload request fails, there is a high chance for the
+                       last received chunk to be swapped with a later chunk, resulting in data shuffling.
+                       This feature prevents this shuffling by using a queue logic for uploads.
+                    type: boolean
+                  storageClass:
+                    description: Specify the storage class for S3 objects.
+                       If this option is not specified,
+                       objects will be stored with the default 'STANDARD' storage class.
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                                            following values: 0 (No debug), 1 (Error), 2 (State change),
+                                            3 (Informational) and 4 Verbose'
+                        enum:
+                          - 0
+                          - 1
+                          - 2
+                          - 3
+                          - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                        TODO: Add other useful fields. apiVersion, kind,
+                                                        uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                  - key
+                                type: object
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                type: object
+              influxdb:
+                description: influxdb Output configuration.
+                properties:
+                  host:
+                    description: 'IP address or hostname of the target InfluxDB service'
+                    type: string
+                  port:
+                    description: 'TCP port of the target InfluxDB service'
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  database:
+                    description: InfluxDB database name where records will be inserted
+                    type: string
+                  bucket:
+                    description: InfluxDB bucket name where records will be inserted -
+                      if specified, database is ignored and v2 of API is used
+                    type: string
+                  org:
+                    description: InfluxDB organization name where the bucket is (v2 only)
+                    type: string
+                  sequenceTag:
+                    description: InfThe name of the tag whose value is incremented
+                       for the consecutive simultaneous events
+                    type: string
+                  httpUser:
+                    description: Optional username for HTTP Basic Authentication
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  httpPasswd:
+                    description: Password for user defined in HTTP_User
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  httpToken:
+                    description: Authentication token used with InfluDB v2 -
+                       if specified, both HTTP_User and HTTP_Passwd are ignored
+                    type: string
+                  tagKeys:
+                    description: Space separated list of keys that needs to be tagged
+                    type: string
+                  autoTags:
+                    description: Automatically tag keys where value is string.
+                       This option takes a boolean value True False, On Of
+                    type: string
+                  tagsListEnabled:
+                    description: Dynamically tag keys which are in the string array at Tags_List_Key key.
+                       This option takes a boolean value True False, On Of
+                    type: string
+                  tagsListKey:
+                    description: Key of the string array optionally contained within each
+                       log record that contains tag keys for that record
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                                            following values: 0 (No debug), 1 (Error), 2 (State change),
+                                            3 (Informational) and 4 Verbose'
+                        enum:
+                          - 0
+                          - 1
+                          - 2
+                          - 3
+                          - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                        TODO: Add other useful fields. apiVersion, kind,
+                                                        uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                  - key
+                                type: object
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                type: object
               tcp:
                 description: TCP defines TCP Output configuration.
                 properties:
